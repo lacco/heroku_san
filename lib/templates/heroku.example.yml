@@ -8,6 +8,8 @@
 #   repo: <git repository, optional>
 #   config:
 #     - <Heroku config:var name>: <Heroku config:var value>
+#   labs:
+#     - <Heroku lab feature>
 #
 production: 
   app: awesomeapp

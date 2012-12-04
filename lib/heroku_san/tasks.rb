@@ -105,6 +105,18 @@ namespace :heroku do
     end
   end
 
+  desc 'Enable lab features for the application.'
+  task :labs do
+    each_heroku_app do |stage|
+      labs = stage.enable_labs
+      next unless labs.present?
+      puts "#{stage.name} labs"
+      labs.each do |lab|
+        puts "  - #{lab}"
+      end
+    end
+  end
+
   desc 'Creates an example configuration file'
   task :create_config do
     filename = %Q{#{HerokuSan.project.config_file.to_s}}

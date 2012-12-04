@@ -43,6 +43,10 @@ module HerokuSan
     def addons
       (@options['addons'] ||= []).flatten
     end
+
+    def labs
+      (@options['labs'] ||= []).flatten
+    end
     
     def run(command, args = nil)
       sh_heroku "run", command, *args
@@ -117,6 +121,13 @@ module HerokuSan
         heroku.post_addon(app, addon)
       end
       installed_addons
+    end
+
+    def enable_labs
+      labs.each do |lab|
+        #TODO check if lab has been activated before
+        sh_heroku "labs:enable", lab
+      end
     end
 
     def restart
