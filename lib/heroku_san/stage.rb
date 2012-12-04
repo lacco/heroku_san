@@ -145,17 +145,17 @@ module HerokuSan
   private
 
     def auth_token
-      @auth_token ||= (ENV['HEROKU_API_KEY'] || `heroku auth:token`.chomp unless MOCK)
+      @auth_token ||= (ENV['HEROKU_API_KEY'] || sh_heroku("auth:token").chomp unless MOCK)
     end
 
     def sh_heroku(*command)
-      preflight_check_for_cli
       cmd = (command + ['--app', app]).compact
       show_command = cmd.join(' ')
       $stderr.puts show_command if @debug
-      ok = system "heroku", *cmd
-      status = $?
-      ok or fail "Command failed with status (#{status.exitstatus}): [heroku #{show_command}]"
+      output = `GEM_HOME='' BUNDLE_GEMFILE='' GEM_PATH='' RUBYOPT='' /usr/local/heroku/bin/heroku #{show_command}`
+      status = $?.to_i
+      return output if status == 0
+      fail "Command failed with status (#{status.exitstatus}): [heroku #{show_command}]"
     end
 
     def preflight_check_for_cli
